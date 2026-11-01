@@ -1,0 +1,60 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: missiollo
+status: open
+reviewed: 2026-11-01
+signature: missiollo
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const REPO = 'https://github.com/missiollo/mega_s01e03/issues';
+  const issues = { parser: `${REPO}/1`, hint: `${REPO}/2`, 'one-day': `${REPO}/3` };
+</script>
+
+The [#4471 page](/kb/incidents/4471) says one issue, one fix queued. Its own table shows more:
+two causes, and a footnote about reports that moved by one day. This page splits the ticket by
+what the reports say, so each problem has its own ticket and its own fix.
+
+<ProblemTable ticket={4471} {issues} />
+
+<Callout kind="warn">
+The queued parser fix closes only the <code>parser</code> problem. The other two stay open until
+their own fixes ship.
+</Callout>
+
+## The three problems
+
+- **`parser`**: the shared parser reads every date month first, and every tenant on file writes
+  the day first. 7 April goes out as 4 July.
+- **`hint`**: the `booking-v3` form prints `MM/DD/YYYY` under its date field, people type what it
+  says, and the form reads the date day first. Only through that form, at three tenants. A
+  parser fix does not touch it.
+- **`one-day`**: the date moves by one day, not by a swap: Tuesday in Lisbon, Monday in Toronto.
+  It points to a time-zone conversion. The desk noted these reports and filed them under the
+  parser by tenant.
+
+## Why they were merged
+
+[Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges reports on subject line alone. All
+three problems come in under the same subjects ("Wrong day on the invite", "Date is wrong"), so
+the subject rule put them in one ticket. Intake's tag did not help: it is a guess from the
+reporter's browser, and the desk's cause comes from the tenant.
+
+What the desk saw, as the #4471 page shows it:
+
+<CauseTable ticket={4471} />
+
+## For the desk
+
+- Count reports by cause, not by subject (`sameCause`, try it on the [triage page](/kb/triage/dedupe)),
+  and read the body: a one-day move gets the parser's cause from its tenant, but it is not a swap.
+- Decision 0001 is accepted, so it stays as written. Replacing it needs a new record.
+- The export repeats some reports across its pages. Count unique ids, as the tables here do.
+
+<RenderStamp {signature} />
