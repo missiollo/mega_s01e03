@@ -14,30 +14,35 @@ signature: missiollo
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
   const REPO = 'https://github.com/missiollo/mega_s01e03/issues';
-  const issues = { parser: `${REPO}/1`, hint: `${REPO}/2`, 'one-day': `${REPO}/3` };
+  // Where each problem stands, from engineering's update closing #4471 on 5 October.
+  const tracks = {
+    parser: { issue: `${REPO}/1`, state: 'fixed' },
+    hint: { issue: `${REPO}/2`, state: "won't fix" },
+    'one-day': { issue: `${REPO}/3`, state: 'open' },
+  };
 </script>
 
 The [#4471 page](/kb/incidents/4471) says one issue, one fix queued. Its own table shows more:
 two causes, and a footnote about reports that moved by one day. This page splits the ticket by
-what the reports say, so each problem has its own ticket and its own fix.
+what the reports say, so each problem has its own ticket and its own outcome.
 
-<ProblemTable ticket={4471} {issues} />
+<ProblemTable ticket={4471} {tracks} />
 
 <Callout kind="warn">
-The queued parser fix closes only the <code>parser</code> problem. The other two stay open until
-their own fixes ship.
+#4471 was closed on 5 October, but one of its problems is still open. The parser fix and the
+retired form do not touch the <code>one-day</code> reports.
 </Callout>
 
 ## The three problems
 
-- **`parser`**: the shared parser reads every date month first, and every tenant on file writes
-  the day first. 7 April goes out as 4 July.
-- **`hint`**: the `booking-v3` form prints `MM/DD/YYYY` under its date field, people type what it
-  says, and the form reads the date day first. Only through that form, at three tenants. A
-  parser fix does not touch it.
-- **`one-day`**: the date moves by one day, not by a swap: Tuesday in Lisbon, Monday in Toronto.
-  It points to a time-zone conversion. The desk noted these reports and filed them under the
-  parser by tenant.
+- **`parser`** · fixed (`fix(dates): parse dd/mm for eu locales`). The shared parser read every
+  date month first, and every tenant on file writes the day first. 7 April went out as 4 July.
+- **`hint`** · won't fix: the `booking-v3` form is retired. It printed `MM/DD/YYYY` under its date
+  field, people typed what it said, and the form read the date day first. Only through that form,
+  at three tenants.
+- **`one-day`** · open. The date moves by one day, not by a swap: Tuesday in Lisbon, Monday in
+  Toronto. It points to a time-zone conversion. The desk noted these reports and filed them under
+  the parser by tenant, so closing #4471 closed them too, without a fix.
 
 ## Why they were merged
 
@@ -52,6 +57,8 @@ What the desk saw, as the #4471 page shows it:
 
 ## For the desk
 
+- Close a merged ticket per problem, not per ticket: check each problem's outcome before the
+  reports it covers go quiet.
 - Count reports by cause, not by subject (`sameCause`, try it on the [triage page](/kb/triage/dedupe)),
   and read the body: a one-day move gets the parser's cause from its tenant, but it is not a swap.
 - Decision 0001 is accepted, so it stays as written. Replacing it needs a new record.
