@@ -4,7 +4,7 @@ title: '#4471 · three problems, not one'
 owner: missiollo
 status: open
 reviewed: 2026-11-01
-signature: missiollo
+signature: 'v1.eyJzdWIiOiIxNTM5IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM1NTc2NzQsImV4cCI6MTc5MzY0NDA3NH0.UhUCQakOS7-Su8ddinJvUMFRVLAGfMXpuEaCRUckElY'
 ---
 
 <script>
